@@ -1,0 +1,234 @@
+<?php include 'includes/db.php'; ?>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Graduation Flowers</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css">
+    <style>
+        body {
+            background: url("photos/b1.jpg") no-repeat center center fixed;
+            background-size: cover;
+            color: white;
+        }
+
+        .navbar {
+            background: linear-gradient(135deg, #e0b3ff, #ff8e8e);
+            padding: 15px 0;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .navbar-brand {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #fff;
+        }
+
+        .navbar-nav .nav-link {
+            font-weight: bold;
+            color: #fff;
+            padding: 12px 15px;
+            transition: color 0.3s ease, background-color 0.3s ease;
+        }
+
+        .navbar-nav .nav-link:hover {
+            color: #333;
+            background-color: #fff;
+            border-radius: 5px;
+        }
+
+        h2 {
+            color: black;
+            font-weight: bold;
+        }
+
+        .card {
+            border: none;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            margin-bottom: 30px; /* Adds spacing between cards */
+        }
+
+        .card-img-top {
+            width: 100%;
+            height: 300px;
+            object-fit: cover;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            cursor: pointer;
+        }
+
+        .card-img-top:hover {
+            transform: scale(1.05);
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .card-body {
+            background-color: white;
+            color: black;
+            padding: 20px;
+        }
+
+        .card-title {
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+
+        .card-text {
+            color: #555;
+        }
+
+        #imageModal {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 1050;
+            background: rgba(0, 0, 0, 0.8);
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        #imageModal img {
+            max-width: 100%;
+            max-height: 80vh;
+        }
+
+        #imageModal .close-modal {
+            background: #fff;
+            border: none;
+            font-size: 1.2rem;
+            margin-top: 10px;
+            padding: 5px 10px;
+            cursor: pointer;
+        }
+
+        footer {
+            background-color: #2e2e2e;
+            color: #ddd;
+            padding: 40px 0;
+            margin-top: 60px;
+        }
+
+        footer .footer-logo {
+            font-size: 2rem;
+            color: white;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+
+        footer .footer-links a {
+            color: #ddd;
+            text-decoration: none;
+            margin: 5px 0;
+            display: block;
+        }
+
+        footer .footer-links a:hover {
+            color: #ffb6b6;
+        }
+    </style>
+</head>
+<body>
+<header>
+    <nav class="navbar navbar-expand-lg navbar-light">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="index.html">Flower Shop</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav mx-auto">
+                    <li class="nav-item"><a class="nav-link" href="index.html">Home</a></li>
+                    <li class="nav-item"><a class="nav-link" href="wedding_decor.html">Wedding Decor</a></li>
+                    <li class="nav-item"><a class="nav-link" href="graduation.html">Graduation</a></li>
+                    <li class="nav-item"><a class="nav-link" href="sympathy.html">Sympathy Flowers</a></li>
+                    <li class="nav-item"><a class="nav-link" href="about.html">About</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+</header>
+
+<main class="container mt-5">
+    <h2 class="text-center mb-4">Graduation Flowers</h2>
+    <div class="row">
+        <?php
+        // Fetch products from the database
+        $result = $conn->query("SELECT * FROM products WHERE category='graduation'");
+        while ($row = $result->fetch_assoc()) {
+            echo "<div class='col-md-4 mb-4'>";
+            echo "<div class='card'>";
+            echo "<img src='{$row['image']}' class='card-img-top' alt='{$row['name']}' onclick='showImageModal(\"{$row['image']}\", \"{$row['name']}\")'>";
+            echo "<div class='card-body'>";
+            echo "<h5 class='card-title'>{$row['name']}</h5>";
+            echo "<p class='card-text'>Rs. {$row['price']}</p>";
+            echo "<button class='btn btn-primary' onclick='orderNow(\"{$row['name']}\")'>Order Now</button>";
+            echo "</div>";
+            echo "</div>";
+            echo "</div>";
+        }
+        ?>
+    </div>
+</main>
+
+<div id="imageModal">
+    <img id="modalImage" src="" alt="Modal Image">
+    <button class="close-modal" onclick="closeImageModal()">Close</button>
+</div>
+
+<script>
+    function showImageModal(src, alt) {
+        const modal = document.getElementById('imageModal');
+        const modalImage = document.getElementById('modalImage');
+        modalImage.src = src;
+        modalImage.alt = alt;
+        modal.style.display = 'block';
+    }
+
+    function closeImageModal() {
+        document.getElementById('imageModal').style.display = 'none';
+    }
+
+    function orderNow(productName) {
+        const orderFormURL = `order_form.html?product=${encodeURIComponent(productName)}`;
+        window.location.href = orderFormURL;
+    }
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-4">
+                <div class="footer-logo">
+                    <img src="photos/logo2.png" alt="Logo" style="height: 40px;"> Flower Shop
+                </div>
+                <p>We are a young company always looking for new and creative ideas to help you with our products in your everyday work.</p>
+                <a href="team.html">Our Team</a>
+            </div>
+            <div class="col-md-4">
+                <h5>Contact</h5>
+                <p>Second road, Kuliyapitiya, Sri Lanka</p>
+                <p>Phone: (+94) 333 12 68 347</p>
+                <p>Email: lucy@domain.com</p>
+            </div>
+            <div class="col-md-4 footer-links">
+                <h5>Links</h5>
+                <a href="home.html">Home</a>
+                <a href="features.html">Features</a>
+                <a href="how-it-works.html">How it works</a>
+                <a href="clients.html">Our clients</a>
+                <a href="pricing.html">Plans & Pricing</a>
+                <a href="affiliates.html">Affiliates</a>
+                <a href="terms.html">Terms</a>
+            </div>
+        </div>
+    </div>
+</footer>
+</body>
+</html>

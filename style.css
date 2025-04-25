@@ -1,0 +1,31 @@
+body { 
+    background-image: url("photos/b2.jpg"); 
+    background-size: cover; 
+    background-repeat: no-repeat; 
+    background-attachment: fixed; 
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    position: relative; /* Position context for the logo */
+}
+
+/* Logo styling */
+
+
+/* Header styling */
+header {
+    margin-bottom: 20px;
+}
+
+.navbar {
+    background-color: #f8f9fa;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Product styling */
+.product {
+    margin: 15px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    display: inline-block;
+}

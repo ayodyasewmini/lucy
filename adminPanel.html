@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin Panel - Product Management</title>
+    <style>
+        /* Your existing styles for the login page */
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(to right, #fbc2eb, #a6c1ee);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .admin-panel {
+            width: 80%;
+            margin: 30px auto;
+            background-color: white;
+            padding: 20px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+            border-radius: 10px;
+        }
+
+        .product-list {
+            margin: 20px 0;
+        }
+
+        .product-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 10px 0;
+            padding: 10px;
+            background-color: #f9f9f9;
+            border-radius: 6px;
+        }
+
+        .product-item button {
+            padding: 8px 15px;
+            border: none;
+            background-color: #ff6f91;
+            color: white;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .product-item button:hover {
+            background-color: #ff4d6d;
+        }
+
+        /* Form to add new products */
+        .add-product-form input {
+            padding: 10px;
+            margin: 10px 0;
+            width: 100%;
+            border-radius: 6px;
+        }
+
+        .add-product-form button {
+            padding: 12px 15px;
+            background-color: #ff6f91;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .add-product-form button:hover {
+            background-color: #ff4d6d;
+        }
+    </style>
+</head>
+<body>
+    <div class="admin-panel">
+        <h2>Admin Panel - Manage Products</h2>
+        
+        <!-- Add New Product Form -->
+        <form class="add-product-form" action="add_product.php" method="POST" enctype="multipart/form-data">
+            <input type="text" name="product_name" placeholder="Product Name" required>
+            <input type="number" name="product_price" placeholder="Product Price" required>
+            <input type="file" name="product_image" accept="image/*" required>
+            <select name="product_category" required>
+                <option value="wedding_decor">Wedding Decor</option>
+                <option value="gifts_delivery">Gifts and Delivery</option>
+                <option value="graduation">Graduation</option>
+                <option value="sympathy">Sympathy Flowers</option>
+            </select>
+            <button type="submit">Add Product</button>
+        </form>
+        
+
+        <!-- Product List (Editable Products) -->
+        <div class="product-list" id="product-list">
+            <div class="product-item">
+                <span class="product-name">Wedding Product 1</span>
+                <span class="product-price">$10</span>
+                <button onclick="editProduct(this)">Edit</button>
+                <button onclick="deleteProduct(this)">Delete</button>
+            </div>
+            <!-- More product items can go here -->
+        </div>
+    </div>
+
+    <script>
+        // Add Product Function
+        function addProduct() {
+            const productName = document.getElementById('new-product-name').value;
+            const productPrice = document.getElementById('new-product-price').value;
+            const productImage = document.getElementById('new-product-image').files[0];
+            const targetPage = document.getElementById('product-target-page').value;
+
+            if (productName && productPrice && productImage) {
+                const productList = document.getElementById('product-list');
+                const newProductItem = document.createElement('div');
+                newProductItem.className = 'product-item';
+
+                // Read the image file and create an image element
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    const productImageUrl = e.target.result;
+
+                    newProductItem.innerHTML = `
+                        <img src="${productImageUrl}" alt="${productName}" width="50" height="50">
+                        <span class="product-name">${productName}</span>
+                        <span class="product-price">$${productPrice}</span>
+                        <button onclick="editProduct(this)">Edit</button>
+                        <button onclick="deleteProduct(this)">Delete</button>
+                    `;
+                    productList.appendChild(newProductItem);
+
+                    // Reset the form
+                    document.getElementById('new-product-name').value = '';
+                    document.getElementById('new-product-price').value = '';
+                    document.getElementById('new-product-image').value = '';
+                };
+
+                reader.readAsDataURL(productImage);
+            }
+        }
+
+        // Edit Product Function
+        function editProduct(button) {
+            const productItem = button.parentElement;
+            const productName = productItem.querySelector('.product-name').textContent;
+            const productPrice = productItem.querySelector('.product-price').textContent.substring(1);
+
+            const newName = prompt('Enter new product name:', productName);
+            const newPrice = prompt('Enter new product price:', productPrice);
+
+            if (newName && newPrice) {
+                productItem.querySelector('.product-name').textContent = newName;
+                productItem.querySelector('.product-price').textContent = `$${newPrice}`;
+            }
+        }
+
+        // Delete Product Function
+        function deleteProduct(button) {
+            const productItem = button.parentElement;
+            productItem.remove();
+        }
+    </script>
+</body>
+</html>
